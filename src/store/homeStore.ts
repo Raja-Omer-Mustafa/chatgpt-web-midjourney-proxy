@@ -12,7 +12,7 @@ export const homeStore = reactive({
         ,isLoader:false
         ,vtoken:'' //turnstile token
         ,ctoken:'' //cookie
-        ,isClient: typeof window !== 'undefined' && window.__TAURI__
+        ,isClient: typeof window !== 'undefined'
         ,ms:{} as any
         ,is_luma_pro:false
         ,is_viggle_pro:false
@@ -140,8 +140,8 @@ let v:gptServerType={
         MJ_SERVER:'',
         UPLOADER_URL:'',
         MJ_API_SECRET:'',
-        SUNO_KEY:'',
-        SUNO_SERVER:'',
+        SUNO_KEY:import.meta.env.VITE_SUNO_KEY,
+        SUNO_SERVER:import.meta.env.VITE_SUNO_SERVER,
         MJ_CDN_WSRV:false
         ,IS_SET_SYNC:true,
         LUMA_SERVER:'',

@@ -40,7 +40,7 @@ const getContainerClass = computed(() => {
   <div class="dark:bg-[#24272e] transition-all p-0" :class="[isMobile ? 'h55' : 'h-full' ]">
     <div class="h-full overflow-hidden" :class="getMobileClass">
       <NLayout class="z-40 transition" :class="getContainerClass" has-sider  :sider-placement="isMobile?'left': 'right'">
-        <aiSider v-if="!isMobile"/>
+        <!-- <aiSider v-if="!isMobile"/> -->
        
         <NLayoutContent class="h-full">
           <RouterView v-slot="{ Component, route }">
@@ -52,7 +52,7 @@ const getContainerClass = computed(() => {
     </div>
     <Permission :visible="needPermission" />
   </div>
-   <aiMobileMenu v-if="isMobile"   /> 
+  <!-- <aiMobileMenu v-if="isMobile"   />  -->
   <aiFooter/>
   <player/>
 </template>

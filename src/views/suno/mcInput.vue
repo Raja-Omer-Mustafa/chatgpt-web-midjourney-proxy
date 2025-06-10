@@ -9,17 +9,17 @@ import { homeStore } from '@/store';
 import { SunoMedia } from '@/api/sunoStore';
 import mcUploaderMp3 from './mcUploadMp3.vue'
 
-const st = ref({type:'custom',isLoading:false})
+const st = ref({type:'description',isLoading:false})
 const exSuno= ref<SunoMedia>()
 const des= ref( {
   "gpt_description_prompt": "",
   "make_instrumental": false,
-  "mv": "chirp-v4",
+  "mv": "V4_5",
   "prompt": ""
 });
 const cs= ref({
   "prompt": "",
-  "mv": "chirp-v4",
+  "mv": "V4_5",
   "title": "",
   "tags": "",
   "continue_at": 120,
@@ -29,10 +29,9 @@ const cs= ref({
 });
 
 const mvOption= [
-{label: 'verion: v3.5',value: 'chirp-v3-5'}
-,{label:'verion: v3',value: 'chirp-v3-0'}
-,{label:'verion: v4',value: 'chirp-v4'}
-,{label:'verion: v4.5',value: 'chirp-auk'}
+{label: 'V4.5',value: 'V4_5'}
+,{label:'V4',value: 'V4'}
+,{label:'V3.5',value: 'V3_5'}
  ]
 
 const canPost = computed(() => {
@@ -88,8 +87,6 @@ const generateLyrics= ()=>{
 const generate= async ()=>{
     st.value.isLoading =false;
     let ids:string[]=[];
-     
-
     if(st.value.type=='custom'){ 
         if(des.value.make_instrumental) cs.value.prompt='';
         if( cs.value.continue_clip_id!=''  ){
@@ -104,11 +101,11 @@ const generate= async ()=>{
 
        ids=r.clips.map((r:any)=>r.id);
        mlog('ids ', ids );
-       if( cs.value.mv='chirp-v3-5-upload' ) cs.value.mv='chirp-v4'
+       if( cs.value.mv='chirp-v3-5-upload' ) cs.value.mv='V4_5'
     }else{
         des.value.prompt='';//cs.value.title;
         // cs.value.prompt=''
-        let r:any= await sunoFetch(  '/generate/description-mode' ,  des.value )  
+        let r:any= await sunoFetch(  '/generate' ,  des.value )  
         st.value.isLoading =false; 
         ids=r.clips.map((r:any)=>r.id);
     }
@@ -267,7 +264,7 @@ watch(()=>homeStore.myData.act, (n)=>{
 
     <div class="pt-4">
         <div class="flex justify-between items-start">
-            <div class=" space-x-1">
+            <div v-if="false" class=" space-x-1"> <!-- this is hide-->
                   <NTag v-if="st.type=='custom'" type="success" size="small" round  ><span class="cursor-pointer" @click="generateLyrics()" >{{ $t('suno.generately') }}</span></NTag>
                   <!-- <NTag v-if="st.type=='custom'" type="success" size="small" round  ><span class="cursor-pointer" @click="generateLyrics()" >上传音频</span></NTag> -->
                   <mcUploaderMp3 v-if="st.type=='custom'"/>
