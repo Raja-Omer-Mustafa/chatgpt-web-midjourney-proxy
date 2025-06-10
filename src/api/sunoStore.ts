@@ -37,10 +37,24 @@ export type SunoMedia = {
     upvote_count: number;
     is_public: boolean;
 };
+
+export type SunoData = {
+    id: string;
+    audioUrl: string;
+    imageUrl: string;
+    prompt: string;
+    sourceImageUrl: string;
+    modelName: string;
+    tags?: string;
+    duration: number;
+    createTime: string;
+    title: string;
+};
+
 export class sunoStore{
   //private id: string;
   private localKey='suno-store';
-  public save(obj:SunoMedia ){
+  public save(obj:SunoData ){
     if(!obj.id ) throw "id must";
     let arr=  this.getObjs();
     let i= arr.findIndex( v=>v.id==obj.id );
@@ -53,12 +67,12 @@ export class sunoStore{
     return this.getObjs().findIndex( v=>v.id== id )
   }
 
-  public getObjs():SunoMedia[]{
-     const obj = ss.get( this.localKey ) as  undefined| SunoMedia[];
+  public getObjs():SunoData[]{
+     const obj = ss.get( this.localKey ) as  undefined| SunoData[];
      if(!obj) return [];
      return obj;
   }
-  public delete( obj:SunoMedia ){
+  public delete( obj:SunoData ){
     if(!obj.id ) throw "id must";
     let arr=  this.getObjs();
     let i= arr.findIndex( v=>v.id==obj.id );

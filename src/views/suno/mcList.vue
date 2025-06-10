@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import { SvgIcon } from '@/components/common';
 //import {   FeedTask} from '@/api/suno';
-import {   sunoStore, SunoMedia} from '@/api/sunoStore';  
+import {   sunoStore, SunoData } from '@/api/sunoStore';  
 
 import playui from './playui.vue';
 import { homeStore } from '@/store';
@@ -11,7 +11,7 @@ import {NEmpty, NImage ,useMessage,NPopconfirm} from "naive-ui"
 import { FeedTask } from '@/api/suno';
 import { t } from '@/locales';
 
-const list= ref<SunoMedia[]>([]);
+const list= ref<SunoData[]>([]);
 const csuno= new sunoStore()
 const st= ref({playid:''});
 
@@ -27,20 +27,16 @@ const getNowCls=(v:any)=>{
     }
     return [];
 }
-const goPlay=(v:SunoMedia)=>{
+const goPlay=(v:SunoData)=>{
     if(v.status=='error'){
         ms.info( t('mj.ud_fail'))
         return ;
     }
     st.value.playid=v.id
     homeStore.setMyData({act:'goPlay',actData:v})
-    
-    if(v.status!='complete'){
-        FeedTask([v.id ])
-    }
 }
 
-const extend=(v:SunoMedia)=>{
+const extend=(v:SunoData)=>{
     mlog("extend", extend )
     //homeStore.myData.actData
     homeStore.setMyData({act:"suno.extend", actData: v  })
@@ -74,7 +70,7 @@ const update = (v:any )=>{
      sp.value=v
       
 }
-const deleteGo=(v:SunoMedia)=>{
+const deleteGo=(v:SunoData)=>{
     mlog('deleteGo', v)
    
     if(csuno.delete(v)) {
@@ -91,52 +87,40 @@ initLoad();
         
         <playui @update="update" v-if="st.playid==item.id"  class="absolute top-[-4px] left-0 w-full  z-10" ></playui>
         <div class="w-[60px] h-[60px] relative  cursor-pointer"  @click="goPlay( item )">
-            
-           <template v-if="item.status=='complete'">
-                <n-image  lazy  width="100"  :src="item.image_url" preview-disabled  >
-                    <template #placeholder>
-                        <div class="w-full h-full justify-center items-center flex"  >
-                        <SvgIcon icon="line-md:downloading-loop" class="text-[40px] text-green-300"   ></SvgIcon>
-                        </div>
-                    </template>
-                </n-image>
-                <div class="absolute top-0 right-0 w-full h-full flex justify-center items-center" v-if="st.playid==item.id">
-                    <SvgIcon icon="mdi:pause-circle-outline" class="text-[40px] text-[#fff]" v-if="sp.status=='pause'"></SvgIcon>
-                    <SvgIcon icon="svg-spinners:bars-scale-middle" class="text-[40px] text-[#fff]" v-else></SvgIcon>
-                </div>
-            </template>
-            <template v-else>
-                <n-image  lazy  width="100"  :src="item.image_url" preview-disabled  />
-                <div class="absolute top-0 right-0  w-full h-full justify-center items-center flex"  >
+            <n-image  lazy  width="100"  :src="item.imageUrl" >
+                <template #placeholder>
+                    <div class="w-full h-full justify-center items-center flex"  >
                     <SvgIcon icon="line-md:downloading-loop" class="text-[40px] text-green-300"   ></SvgIcon>
-                </div>
-            </template>
-             
-
-            
+                    </div>
+                </template>
+            </n-image>
+            <div class="absolute top-0 right-0 w-full h-full flex justify-center items-center" v-if="st.playid==item.id">
+                <SvgIcon icon="mdi:pause-circle-outline" class="text-[40px] text-[#fff]" v-if="sp.status=='pause'"></SvgIcon>
+                <SvgIcon icon="svg-spinners:bars-scale-middle" class="text-[40px] text-[#fff]" v-else></SvgIcon>
+            </div>
         </div> 
         <div class="flex-1  pl-2"> 
             <div class="flex justify-between line-clamp-1 w-full cursor-pointer"  @click="goPlay( item )">
                 <div class="flex justify-start items-center"> 
                     <h3 >{{item.title}}</h3>
-                    <div class="text-[8px] flex items-center border-[1px] border-gray-500/30 px-1 ml-1 list-none rounded-md" v-if="item.metadata?.type=='upload'" >Uploaded</div>
+                    <div class="text-[8px] flex items-center border-[1px] border-gray-500/30 px-1 ml-1 list-none rounded-md" v-if="item?.metadata?.type=='upload'" >Uploaded</div>
                 </div>
-                <div class="opacity-80 line-clamp-1 max-w-[320px]"   >{{item.metadata.tags}}</div>
+                <div class="opacity-80 line-clamp-1 max-w-[320px]"   >{{item?.tags}}</div>
             </div>
-            <div class="opacity-60 line-clamp-1 w-full text-[12px] cursor-pointer"  @click="goPlay( item )" v-if="item.metadata && item.metadata.prompt">
-             {{item.metadata.prompt}}
+            <div class="opacity-60 line-clamp-1 w-full text-[12px] cursor-pointer"  @click="goPlay( item )" v-if="item?.prompt">
+             {{item?.prompt}}
             </div>
             <div class="opacity-60 line-clamp-1 w-full text-[12px] cursor-pointer"  @click="goPlay( item )" v-else>
              {{$t('suno.noly')}}
               </div>
             <div class="text-right text-[14px] flex justify-end items-center space-x-2  ">
-                <div class="text-[8px] flex items-center border-[1px] border-gray-500/30 px-1 list-none rounded-md" v-if="item.metadata?.audio_prompt_id">
-                    {{ $t('suno.extendFrom') }}:{{ getExSuno(item.metadata?.audio_prompt_id)?.title }}
+                <div class="text-[8px] flex items-center border-[1px] border-gray-500/30 px-1 list-none rounded-md" v-if="item?.metadata?.audio_prompt_id">
+                    {{ $t('suno.extendFrom') }}:{{ getExSuno(item?.metadata?.audio_prompt_id)?.title }}
                 </div>
                 <div v-if="item.status=='error'" class="text-[8px] flex items-center border-[1px] border-red-500/80 px-1 list-none rounded-md ">{{ $t('suno.fail') }}</div>
-                <template v-if="item.metadata && item.metadata.duration">
-                    <div class="text-[8px] flex items-center border-[1px] border-gray-500/30 px-1 list-none rounded-md" > {{item.metadata.duration.toFixed(1)}}s</div>
-                    <div @click="extend(item)" class="text-[8px] flex items-center border-[1px] border-gray-500/30 px-1 list-none rounded-md cursor-pointer">{{ $t('suno.extend') }}</div>
+                <template v-if="item?.duration">
+                    <div class="text-[8px] flex items-center border-[1px] border-gray-500/30 px-1 list-none rounded-md" > {{item?.duration.toFixed(1)}}s</div>
+                    <!-- <div @click="extend(item)" class="text-[8px] flex items-center border-[1px] border-gray-500/30 px-1 list-none rounded-md cursor-pointer">{{ $t('suno.extend') }}</div> -->
                 </template>
                 <div class="text-[8px] flex items-center border-[1px] border-gray-500/30 px-1 list-none rounded-md" v-if="item.major_model_version"> {{item.major_model_version}}</div>
                 <n-popconfirm @positive-click="()=>deleteGo(item)" placement="bottom">
@@ -144,7 +128,7 @@ initLoad();
                      {{ $t('mj.confirmDelete') }}
                 </n-popconfirm>
                 <SvgIcon icon="mdi:play-circle-outline" class="cursor-pointer"  @click="goPlay( item )" />
-                <a :href="item.audio_url" download  target="_blank"><SvgIcon icon="mdi:download" class="cursor-pointer"/></a>
+                <a :href="item.audioUrl" download  target="_blank"><SvgIcon icon="mdi:download" class="cursor-pointer"/></a>
             </div>
            
         </div>

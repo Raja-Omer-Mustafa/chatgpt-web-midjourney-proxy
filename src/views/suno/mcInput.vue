@@ -3,7 +3,7 @@ import { ref,computed ,onMounted, watch} from 'vue';
 import { NTabs ,NTabPane ,NInput,NSwitch ,NTooltip, NTag ,NButton, useMessage,NSelect, NImage, NSlider} from "naive-ui";
 import { SvgIcon } from '@/components/common';
 import { mlog } from '@/api';
-import { sunoFetch ,lyricsFetch, randStyle, FeedTask} from '@/api/suno';
+import { sunoFetch ,lyricsFetch, randStyle, FeedTask, FeedMusic, generateMusic } from '@/api/suno';
 import { t } from '@/locales';
 import { homeStore } from '@/store';
 import { SunoMedia } from '@/api/sunoStore';
@@ -48,6 +48,7 @@ const canPost = computed(() => {
 })
 
 const ms = useMessage();
+const callBackUrl = import.meta.env.VITE_SUNO_CALL_BACK_URL
 onMounted(() => {
     homeStore.setMyData({ms:ms})
 });
@@ -103,14 +104,25 @@ const generate= async ()=>{
        mlog('ids ', ids );
        if( cs.value.mv='chirp-v3-5-upload' ) cs.value.mv='V4_5'
     }else{
-        des.value.prompt='';//cs.value.title;
-        // cs.value.prompt=''
-        let r:any= await sunoFetch(  '/generate' ,  des.value )  
+        let response: any = await generateMusic('/generate', {
+            prompt: des.value.gpt_description_prompt,
+            title: cs.value.title,
+            model: des.value.mv,
+            instrumental: false,
+            customMode: st.value.type == 'custom',
+            callBackUrl: callBackUrl
+        });
+        mlog('generate_music', response);
+        if (response.code != 200) {
+            ms.error(response.msg);
+        }
+        else {
+            ms.info(response.msg);
+            des.value.gpt_description_prompt = cs.value.title = '';
+            FeedMusic(response?.data?.taskId);
+        }
         st.value.isLoading =false; 
-        ids=r.clips.map((r:any)=>r.id);
     }
-    cs.value.task='';
-    FeedTask(ids)
 }
 
 
@@ -123,13 +135,13 @@ watch(()=>homeStore.myData.act, (n)=>{
         const s= homeStore.myData.actData as SunoMedia
         exSuno.value= s 
         cs.value.continue_clip_id= s.id
-        cs.value.continue_at= Math.ceil(s.metadata.duration/2) 
+        cs.value.continue_at= Math.ceil(s?.metadata?.duration/2) 
     }
 });
 
 </script>
 <template>
-<div class="p-2"> 
+<div class="p-2">
     <n-tabs type="segment" animated  v-model:value="st.type">
         <!-- <n-tab-pane name="start" tab=""> 
 
@@ -219,7 +231,7 @@ watch(()=>homeStore.myData.act, (n)=>{
                         <NTag  type="success" size="small" round  ><span class="cursor-pointer" @click="cs.continue_clip_id=''" >清除</span></NTag>
 
                     </div>
-                    <n-slider v-model:value="cs.continue_at" :step="1" :max="Math.ceil( exSuno.metadata.duration)">
+                    <n-slider v-model:value="cs.continue_at" :step="1" :max="Math.ceil( exSuno?.metadata?.duration)">
                         <template #thumb>
                             <div class="bg-[--n-fill-color] text-[9px]  border-[0px]  px-1 list-none rounded-md">{{ cs.continue_at }}s</div>
                         </template>
@@ -241,8 +253,8 @@ watch(()=>homeStore.myData.act, (n)=>{
                                 <h3>{{exSuno.title}}</h3>
                                 <!-- <div class="opacity-80"  >{{exSuno.metadata.tags}}</div> -->
                             </div>
-                            <div class="opacity-60 line-clamp-1 w-full text-[12px] cursor-pointer"   v-if="exSuno.metadata && exSuno.metadata.prompt">
-                            {{exSuno.metadata.prompt}}
+                            <div class="opacity-60 line-clamp-1 w-full text-[12px] cursor-pointer"   v-if="exSuno?.metadata && exSuno?.metadata?.prompt">
+                            {{exSuno?.metadata?.prompt}}
                             </div>
                             <div class="opacity-60 line-clamp-1 w-full text-[12px] cursor-pointer"  v-else>
                             {{$t('suno.noly')}}
@@ -250,8 +262,8 @@ watch(()=>homeStore.myData.act, (n)=>{
                             <div class="text-right text-[14px] flex justify-end items-center space-x-2  ">
                             
                                 <div v-if="exSuno.status=='error'" class="text-[8px] flex items-center border-[1px] border-red-500/80 px-1 list-none rounded-md ">失败</div>
-                                <template v-if="exSuno.metadata && exSuno.metadata.duration">
-                                    <div class="text-[8px] flex items-center border-[1px] border-gray-500/30 px-1 list-none rounded-md" > {{exSuno.metadata.duration.toFixed(1)}}s</div>
+                                <template v-if="exSuno?.metadata && exSuno?.metadata?.duration">
+                                    <div class="text-[8px] flex items-center border-[1px] border-gray-500/30 px-1 list-none rounded-md" > {{exSuno?.metadata?.duration?.toFixed(1)}}s</div>
                                 </template>
                                 <div class="text-[8px] flex items-center border-[1px] border-gray-500/30 px-1 list-none rounded-md" v-if="exSuno.major_model_version"> {{exSuno.major_model_version}}</div>
                             </div>

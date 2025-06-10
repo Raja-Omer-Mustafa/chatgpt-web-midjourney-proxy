@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import {watch,ref  } from 'vue'
-import {SunoMedia} from '@/api/sunoStore';
+import {SunoData} from '@/api/sunoStore';
 import { homeStore } from '@/store';
 import { NImage,NEmpty } from 'naive-ui';
 import {SvgIcon} from '@/components/common'
 import { udioTask } from '@/api/udioStore';
 
-//const pObj= ref<SunoMedia>()
+//const pObj= ref<SunoData>()
 const pObj= ref({image_large_url:'',title:'',tags:'',prompt:'' })
 watch(()=>homeStore.myData.act, (n)=>{
     if(n=='goPlay'){
         let data = homeStore.myData.actData 
-        const a = data as SunoMedia
-        pObj.value.image_large_url= a.image_large_url
-        pObj.value.tags= a.metadata.tags??''
-        pObj.value.prompt= a.metadata.prompt??''
+        const a = data as SunoData
+        pObj.value.image_large_url= a.sourceImageUrl
+        pObj.value.tags= a.tags??''
+        pObj.value.prompt= a.prompt??''
         pObj.value.title= a.title
         
     } 

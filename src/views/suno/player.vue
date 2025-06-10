@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { mlog } from '@/api';
-import { SunoMedia } from '@/api/sunoStore';
+import { SunoData } from '@/api/sunoStore';
 import { udioTask } from '@/api/udioStore';
 import { homeStore } from '@/store';
 import { watch,ref  } from 'vue';
@@ -56,8 +56,8 @@ watch(()=>homeStore.myData.act, (n)=>{
     if(n=='goPlay'){
         let data = homeStore.myData.actData
         mlog('goPlay' , data );
-        let abc = data as SunoMedia
-        pObj.value.audio_url=abc.audio_url
+        let abc = data as SunoData
+        pObj.value.audio_url=abc.audioUrl
         goPlay();
 
     }

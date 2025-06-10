@@ -1,6 +1,8 @@
 import { gptServerStore,homeStore,useAuthStore } from "@/store";
 import { mlog } from "./mjapi";
-import { sunoStore,SunoMedia } from "./sunoStore";  
+import { sunoStore,SunoMedia } from "./sunoStore";
+
+let shouldCancel: boolean = false;
 
 const getUrl=(url:string)=>{
     if(url.indexOf('http')==0) return url;
@@ -130,4 +132,90 @@ export const sunoFetch=(url:string,data?:any,opt2?:any )=>{
         })
     })
 
+}
+
+export const generateMusic = (url: string, data?: any, opt2?: any) => {
+    gptServerStore.setInit();
+    mlog('generateMusic', url);
+    let headers = { 'Content-Type': 'application/json' }
+    if(opt2 && opt2.headers) headers= opt2.headers;
+
+    headers = { ...headers, ...getHeaderAuthorization() }
+    return new Promise<any>((resolve, reject) => {
+        let opt: RequestInit = { method: 'POST' };
+        opt.headers = headers;
+        opt.body = JSON.stringify(data);
+        opt.method = 'POST';
+        fetch(getUrl(url), opt)
+        .then(async (d) =>{
+            if (!d.ok) { 
+                let msg = d.status
+                try{ 
+                  let bjson:any  = await d.json();
+                  msg = '('+ d.status+'): '+(bjson?.error?.message??'' ) 
+                }catch( e ){ 
+                }
+                homeStore.myData.ms &&  homeStore.myData.ms.error(msg )
+                throw new Error( msg );
+            }
+     
+            d.json().then(d=> resolve(d)).catch(e=>{ 
+                homeStore.myData.ms &&  homeStore.myData.ms.error(e)
+                reject(e) 
+            }
+        )})
+        .catch(e=>{
+            console.log(e);
+            if (e.name === 'TypeError' && e.message === 'Failed to fetch') {
+                homeStore.myData.ms &&  homeStore.myData.ms.error('CORS error'  )
+            }
+            else homeStore.myData.ms &&  homeStore.myData.ms.error(e)
+            mlog('e', e.stat )
+            reject(e)
+        })
+    })
+}
+
+export const FeedMusic = async (id: string | null) => {
+    gptServerStore.setInit();
+    const sunoS = new sunoStore();
+    if(id == undefined) return;
+    let url = '/generate/record-info?taskId='+ id;
+    let opt: RequestInit = { method: 'GET' };
+    let headers = { 'Content-Type': 'application/json' };
+    headers = { ...headers, ...getHeaderAuthorization() };
+    opt.headers = headers;
+    fetch(getUrl(url), opt)
+    .then(async (d) =>{
+        const data = await d.json();
+        if (data.data.errorCode != 200 && data.data.errorCode != null) {
+            homeStore.myData.ms &&  homeStore.myData.ms.error(data.data.errorMessage);
+            shouldCancel = true;
+            return;
+        }
+        else if (data.data.status == "SUCCESS") {
+            shouldCancel = true;
+            console.log(data.data.response.sunoData);
+            let sunoData = data.data.response.sunoData;
+            sunoData.forEach((item) =>{
+                sunoS.save(item);
+            });
+            homeStore.setMyData({act:'suno.extend'});
+        }
+    })
+    .catch(e=>{
+        console.log(e);
+    })
+    if (shouldCancel) {
+        return;
+    }
+    // d.forEach( (item:SunoMedia) =>{
+    //      sunoS.save( item)
+    //     if(item.status== "complete" || item.status== "error" ){
+    //         ids= ids.filter(v=>v!=item.id )
+    //     }
+    // });
+    homeStore.setMyData({act:'FeedTask'});
+    await sleep(5 * 1020);
+    FeedMusic(id);
 }
