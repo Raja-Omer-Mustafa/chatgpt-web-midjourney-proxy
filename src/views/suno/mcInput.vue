@@ -86,9 +86,29 @@ const generateLyrics= ()=>{
 }
 
 const generate= async ()=>{
-    st.value.isLoading =false;
+    st.value.isLoading = true;
     let ids:string[]=[];
-    if(st.value.type=='custom'){ 
+    if(st.value.type=='custom'){
+        let response: any = await generateMusic('/generate', {
+            prompt: cs.value.prompt,
+            title: cs.value.title,
+            style: cs.value.tags,
+            model: des.value.mv,
+            instrumental: false,
+            customMode: st.value.type == 'custom',
+            callBackUrl: callBackUrl
+        });
+        mlog('generate_music', response);
+        if (response.code != 200) {
+            ms.error(response.msg);
+        }
+        else {
+            ms.info(response.msg);
+            // des.value.gpt_description_prompt = cs.value.title = '';
+            FeedMusic(response?.data?.taskId);
+        }
+        st.value.isLoading =false;
+        return;
         if(des.value.make_instrumental) cs.value.prompt='';
         if( cs.value.continue_clip_id!=''  ){
             //chirp-v3-5-upload
@@ -118,7 +138,7 @@ const generate= async ()=>{
         }
         else {
             ms.info(response.msg);
-            des.value.gpt_description_prompt = cs.value.title = '';
+            // des.value.gpt_description_prompt = cs.value.title = '';
             FeedMusic(response?.data?.taskId);
         }
         st.value.isLoading =false; 
