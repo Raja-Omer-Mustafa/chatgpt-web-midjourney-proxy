@@ -3,12 +3,17 @@ import { ref } from 'vue';
 import McInput from './mcInput.vue';
 import mcList from './mcList.vue';
 import mcplayer from './mcplayer.vue';
+import Skeleton from './loaderSkeleton.vue';
 import { NTabs,NTabPane} from "naive-ui"
-
+import {computed } from 'vue'; 
 import udioInput from './udioInput.vue';
 import udioList from './udioList.vue';
 import { gptServerStore } from '@/store';
 import { useRoute } from 'vue-router'; 
+import { sunoStore } from '@/api/sunoStore';
+
+const suno = new sunoStore(); // Instantiate the store
+const showLoaderSkeleton = suno.showLoaderSkeleton;
 
 const route = useRoute(); // 获取当前路由对象
 const st= ref({menu:'suno',tab:''});
@@ -53,9 +58,9 @@ initLoad();
         </n-tabs>
     </div>
     <div class=" flex-1  h-full bg-[#fafbfc] pt-2 dark:bg-[#18181c] overflow-y-auto " >
+        <Skeleton v-if="showLoaderSkeleton == true"/>
         <udioList  v-if="gptServerStore.myData.TAB_MUSIC=='udio'"/>
         <mcList  v-else />
-       
     </div>
     <div class="w-[300px]  h-full overflow-y-auto ">
         <mcplayer/>
