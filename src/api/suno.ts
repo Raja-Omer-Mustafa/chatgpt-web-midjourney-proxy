@@ -1,7 +1,7 @@
 import { gptServerStore,homeStore,useAuthStore } from "@/store";
 import { mlog } from "./mjapi";
-import { sunoStore,SunoMedia } from "./sunoStore";
-
+import { sunoStore,SunoMedia, showLoaderSkeleton } from "./sunoStore";
+import { ref } from 'vue';
 let shouldCancel: boolean = false;
 
 const getUrl=(url:string)=>{
@@ -191,16 +191,18 @@ export const FeedMusic = async (id: string | null) => {
         if (data.data.errorCode != 200 && data.data.errorCode != null) {
             homeStore.myData.ms &&  homeStore.myData.ms.error(data.data.errorMessage);
             shouldCancel = true;
+            showLoaderSkeleton.value = false;
             return;
         }
         else if (data.data.status == "SUCCESS") {
             shouldCancel = true;
-            console.log(data.data.response.sunoData);
             let sunoData = data.data.response.sunoData;
+            homeStore.setMyData({act:'suno.extend', actData:sunoData[0] });
+            
             sunoData.forEach((item) =>{
                 sunoS.save(item);
             });
-            homeStore.setMyData({act:'suno.extend'});
+            showLoaderSkeleton.value = false;
         }
     })
     .catch(e=>{

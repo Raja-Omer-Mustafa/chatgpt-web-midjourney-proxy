@@ -6,7 +6,7 @@ import { mlog } from '@/api';
 import { sunoFetch ,lyricsFetch, randStyle, FeedTask, FeedMusic, generateMusic } from '@/api/suno';
 import { t } from '@/locales';
 import { homeStore } from '@/store';
-import { SunoMedia } from '@/api/sunoStore';
+import { SunoMedia, showLoaderSkeleton } from '@/api/sunoStore';
 import mcUploaderMp3 from './mcUploadMp3.vue'
 
 const st = ref({type:'description',isLoading:false})
@@ -105,6 +105,7 @@ const generate= async ()=>{
         else {
             ms.info(response.msg);
             // des.value.gpt_description_prompt = cs.value.title = '';
+            showLoaderSkeleton.value = true;
             FeedMusic(response?.data?.taskId);
         }
         st.value.isLoading =false;
@@ -139,6 +140,7 @@ const generate= async ()=>{
         else {
             ms.info(response.msg);
             // des.value.gpt_description_prompt = cs.value.title = '';
+            showLoaderSkeleton.value = true;
             FeedMusic(response?.data?.taskId);
         }
         st.value.isLoading =false; 

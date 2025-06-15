@@ -1,5 +1,6 @@
 import { ss } from '@/utils/storage'
- 
+import { ref } from 'vue';
+export const showLoaderSkeleton = ref(false)
 export type SunoMedia = {
     id: string;
     video_url: string;
@@ -53,6 +54,7 @@ export type SunoData = {
 
 export class sunoStore{
   //private id: string;
+    
   private localKey='suno-store';
   public save(obj:SunoData ){
     if(!obj.id ) throw "id must";
