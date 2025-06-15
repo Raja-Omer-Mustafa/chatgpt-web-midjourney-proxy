@@ -45,7 +45,7 @@ const extend=(v:SunoData)=>{
 const sp= ref({v:10, max:0 ,status:'',idDrop:false });
  
 watch(()=>homeStore.myData.act, (n)=>{
-     if(n=='FeedTask'){
+     if(n=='FeedTask' || n=='suno.extend'){
          initLoad()
      }
      if(n=='playEned'){

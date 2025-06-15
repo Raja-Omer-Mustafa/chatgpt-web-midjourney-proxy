@@ -10,10 +10,7 @@ import udioInput from './udioInput.vue';
 import udioList from './udioList.vue';
 import { gptServerStore } from '@/store';
 import { useRoute } from 'vue-router'; 
-import { sunoStore } from '@/api/sunoStore';
-
-const suno = new sunoStore(); // Instantiate the store
-const showLoaderSkeleton = suno.showLoaderSkeleton;
+import { showLoaderSkeleton } from '@/api/sunoStore';
 
 const route = useRoute(); // 获取当前路由对象
 const st= ref({menu:'suno',tab:''});
