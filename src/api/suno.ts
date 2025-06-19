@@ -134,9 +134,9 @@ export const sunoFetch=(url:string,data?:any,opt2?:any )=>{
 
 }
 
-export const generateMusic = (url: string, data?: any, opt2?: any) => {
+export const generateMusic = (data?: any, opt2?: any) => {
     gptServerStore.setInit();
-    mlog('generateMusic', url);
+    mlog('generateMusic');
     let headers = { 'Content-Type': 'application/json' }
     if(opt2 && opt2.headers) headers= opt2.headers;
 
@@ -146,7 +146,7 @@ export const generateMusic = (url: string, data?: any, opt2?: any) => {
         opt.headers = headers;
         opt.body = JSON.stringify(data);
         opt.method = 'POST';
-        fetch(getUrl(url), opt)
+        fetch('http://127.0.0.1:8000/api/generate/music', opt)
         .then(async (d) =>{
             if (!d.ok) { 
                 let msg = d.status
