@@ -8,6 +8,8 @@ import { t } from '@/locales';
 import { homeStore } from '@/store';
 import { SunoMedia, showLoaderSkeleton } from '@/api/sunoStore';
 import mcUploaderMp3 from './mcUploadMp3.vue'
+import { useVisitorData } from '@fingerprintjs/fingerprintjs-pro-vue-v3';
+import axios from 'axios';
 
 const st = ref({type:'description',isLoading:false})
 const exSuno= ref<SunoMedia>()
@@ -53,6 +55,24 @@ onMounted(() => {
     homeStore.setMyData({ms:ms})
 });
 //生成歌词
+
+ let visitorId: string | null = null;
+
+const { data, getData } = useVisitorData(
+  { extendedResult: false }, 
+  // Set to true to fetch data on mount
+  { immediate: false }
+);
+
+watch(data, async (currentData) => {
+  if (currentData && currentData.visitorId) {
+        console.log('Visitor data:', currentData)
+        visitorId = currentData.visitorId;
+        console.log('Successfully sent visitorId to Laravel API:', visitorId)
+    }
+})
+
+
 const generateLyrics= ()=>{
     //generate/lyrics
     let prompt = cs.value.prompt || cs.value.title;
@@ -88,16 +108,19 @@ const generateLyrics= ()=>{
 const generate= async ()=>{
     st.value.isLoading = true;
     let ids:string[]=[];
+    await getData();
     if(st.value.type=='custom'){
-        let response: any = await generateMusic('/generate', {
+        let response: any = await generateMusic({
             prompt: cs.value.prompt,
             title: cs.value.title,
             style: cs.value.tags,
             model: des.value.mv,
             instrumental: false,
             customMode: st.value.type == 'custom',
-            callBackUrl: callBackUrl
+            callBackUrl: callBackUrl,
+            visitorId: visitorId,
         });
+        console.log("response: ", response);
         mlog('generate_music', response);
         if (response.code != 200) {
             ms.error(response.msg);
@@ -111,7 +134,7 @@ const generate= async ()=>{
         st.value.isLoading =false;
         return;
         if(des.value.make_instrumental) cs.value.prompt='';
-        if( cs.value.continue_clip_id!=''  ){
+        if( cs.value.continue_clip_id!=''  ){   
             //chirp-v3-5-upload
            // cs.value.mv='chirp-v3-5-upload'
            if( exSuno.value?.metadata?.type=='upload') cs.value.task='upload_extend'
@@ -125,14 +148,16 @@ const generate= async ()=>{
        mlog('ids ', ids );
        if( cs.value.mv='chirp-v3-5-upload' ) cs.value.mv='V4_5'
     }else{
-        let response: any = await generateMusic('/generate', {
+        let response: any = await generateMusic({
             prompt: des.value.gpt_description_prompt,
             title: cs.value.title,
             model: des.value.mv,
             instrumental: false,
             customMode: st.value.type == 'custom',
-            callBackUrl: callBackUrl
+            callBackUrl: callBackUrl,
+            visitorId: visitorId,
         });
+        console.log("response: ", response);
         mlog('generate_music', response);
         if (response.code != 200) {
             ms.error(response.msg);
