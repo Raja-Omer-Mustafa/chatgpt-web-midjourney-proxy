@@ -14,7 +14,7 @@ const appStore = useAppStore()
 const chatStore = useChatStore()
 const authStore = useAuthStore()
 
-router.replace({ name: 'music', params: { uuid: chatStore.active } })
+// router.replace({ name: 'music', params: { uuid: chatStore.active } })
 homeStore.setMyData({local:'music'});
 const { isMobile } = useBasicLayout()
 
@@ -40,7 +40,7 @@ const getContainerClass = computed(() => {
   <div class="dark:bg-[#24272e] transition-all p-0" :class="[isMobile ? 'h55' : 'h-full' ]">
     <div class="h-full overflow-hidden" :class="getMobileClass">
       <NLayout class="z-40 transition" :class="getContainerClass" has-sider  :sider-placement="isMobile?'left': 'right'">
-        <!-- <aiSider v-if="!isMobile"/> -->
+        <aiSider v-if="!isMobile"/>
        
         <NLayoutContent class="h-full">
           <RouterView v-slot="{ Component, route }">
