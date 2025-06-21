@@ -476,7 +476,9 @@ export default {
     "menuinfo": "Suno Music Creation",
     "server": "Suno API Endpoint",
     "serverabout": "Suno Related",
-    "setOpenKeyPlaceholder": "Related KEY for Suno API; optional"
+    "setOpenKeyPlaceholder": "Related KEY for Suno API; optional",
+    "historyinfo": "Suno Music History",
+    "history": "History"
 
     ,upMps:'Upload'
     ,extend:'Extend'
