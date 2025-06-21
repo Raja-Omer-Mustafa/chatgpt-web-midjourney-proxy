@@ -164,6 +164,11 @@ const togglePlay = (index: number) => {
     }
 };
 
+function formatPrompt(prompt?: string | null): string[] {
+  if (!prompt) return [];
+  return prompt.split(/[,\.]/g); // split on commas or periods
+}
+
 onMounted(() => {
     getMusic();
 });
@@ -416,8 +421,13 @@ onMounted(() => {
                                                         class="relative flex w-full flex-auto flex-col place-content-inherit align-items-inherit h-auto break-words text-left subpixel-antialiased max-h-40 overflow-y-auto p-4">
                                                         <p class="py-1 transition-colors font-medium text-primary">
                                                             [Verse]</p>
-                                                        <p class="py-1 transition-colors text-default-600">{{
-                                                            item.prompt }}</p>
+                                                       <p
+                                                            v-for="(line, idx) in formatPrompt(item.prompt)"
+                                                            :key="idx"
+                                                            class="py-1 transition-colors text-default-600"
+                                                        >
+                                                            {{ line.trim() }}
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
