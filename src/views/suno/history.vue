@@ -32,7 +32,8 @@ const audioRefs = ref<HTMLAudioElement[]>([]);
 async function getMusic() {
     const visitor_id = 'P3rxmekLjoQfNCa07Z7e';
     try {
-        const response = await fetch(`http://127.0.0.1:8000/api/get/response/data/${visitor_id}`, {
+        const BASEURL = import.meta.env.VITE_BASEURL_CHEAT;
+        const response = await fetch(`${BASEURL}/get/response/data/${visitor_id}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
