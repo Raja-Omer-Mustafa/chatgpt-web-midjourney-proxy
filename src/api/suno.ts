@@ -141,12 +141,13 @@ export const generateMusic = (data?: any, opt2?: any) => {
     if(opt2 && opt2.headers) headers= opt2.headers;
 
     headers = { ...headers, ...getHeaderAuthorization() }
+    const BASEURL = import.meta.env.VITE_BASEURL_CHEAT;
     return new Promise<any>((resolve, reject) => {
         let opt: RequestInit = { method: 'POST' };
         opt.headers = headers;
         opt.body = JSON.stringify(data);
         opt.method = 'POST';
-        fetch('http://127.0.0.1:8000/api/generate/music', opt)
+        fetch(`${BASEURL}/generate/music`, opt)
         .then(async (d) =>{
             if (!d.ok) { 
                 let msg = d.status

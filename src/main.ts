@@ -7,7 +7,7 @@ import { setupRouter } from './router'
 import {fpjsPlugin, FpjsVueOptions, FingerprintJSPro,} from '@fingerprintjs/fingerprintjs-pro-vue-v3';
 
 async function bootstrap() {
-  const apiKey = 'qZDF6BPuOo8c5lsP8wQ6'  //import.meta.env.FINGERPRINT_API_PUBLIC_KEY;
+  const apiKey = import.meta.env.VITE_FINGERPRINT_API_PUBLIC_KEY;
   const app = createApp(App)
   setupAssets()
 
