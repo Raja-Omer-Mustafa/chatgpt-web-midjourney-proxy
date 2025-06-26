@@ -4,6 +4,8 @@ import { onMounted, ref } from 'vue';
 const hoveredItemIndex = ref<number | null>(null);
 const hoveredIndex = ref<number | null>(null);
 const openedDetailIndex = ref<number | null>(null);
+const currentPage = ref(1);
+const totalPages = ref(1);
 
 interface MusicItem {
     type: string;
@@ -29,7 +31,7 @@ const downloadingIndex = ref<number | null>(null);
 const playingIndex = ref<number | null>(null);
 const audioRefs = ref<HTMLAudioElement[]>([]);
 
-async function getMusic() {
+async function getMusic(page = 1) {
     const visitor_id = 'P3rxmekLjoQfNCa07Z7e';
     try {
         const BASEURL = import.meta.env.VITE_BASEURL_CHEAT;
@@ -44,8 +46,12 @@ async function getMusic() {
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
         const results = await response.json();
+        // Save pagination metadata
+        currentPage.value = results.current_page;
+        totalPages.value = results.last_page;
 
-        const items = results.flatMap((item: any) => {
+        const items = (Array.isArray(results.data) ? results.data : []).flatMap((item: any) => {
+
             const data = item?.response?.data;
             const sunoData = data?.response?.sunoData;
             let callBackUrl = null;
@@ -180,7 +186,7 @@ onMounted(() => {
 
 <template>
     <div class="bg-gray-50 dark:bg-[#18181c] p-4 space-y-6">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden" v-if="musicItems && musicItems.length">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-800">
                     <tr>
@@ -440,6 +446,76 @@ onMounted(() => {
                     </tr>
                 </tbody>
             </table>
+            <div class="flex flex-col items-center justify-between gap-2 px-2 py-2 sm:flex-row">
+                <nav role="navigation" aria-label="pagination navigation" data-slot="base" data-controls="true"
+                    data-dots-jump="5" data-total="4" data-active-page="1"
+                    class="p-2.5 -m-2.5 overflow-x-scroll scrollbar-hide">
+                    <ul data-slot="wrapper"
+                        class="flex flex-nowrap h-fit max-w-fit relative items-center overflow-visible gap-0 shadow-sm rounded-medium">
+                        
+                        <li role="button" tabindex="0" aria-label="previous page button"
+                            :aria-disabled="currentPage == 1"
+                            :data-disabled="currentPage == 1" data-slot="prev"
+                            @click="currentPage > 1 && getMusic(currentPage - 1)"
+                            class="!rounded-e-none flex flex-wrap truncate box-border items-center justify-center text-default-foreground
+                            outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus
+                            data-[focus-visible=true]:outline-offset-2 data-[disabled=true]:text-default-300 data-[disabled=true]:pointer-events-none
+                            shadow-sm bg-default-100 [&amp;[data-hover=true]:not([data-active=true])]:bg-default-200 active:bg-default-300
+                            min-w-9 w-9 h-9 text-small rounded-medium">
+                            <svg aria-hidden="true" fill="none" focusable="false" height="1em" role="presentation"
+                                viewBox="0 0 24 24" width="1em">
+                                <path d="M15.5 19l-7-7 7-7" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="1.5"></path>
+                            </svg>
+                        </li>
+                        <li v-for="page in totalPages" :key="page"
+                            role="button"
+                            tabindex="0"
+                            :aria-label="`pagination item ${page}`"
+                            :aria-current="currentPage === page ? 'true' : undefined"
+                            :data-active="currentPage === page"
+                            data-slot="item"
+                            @click="getMusic(page)"
+                            class="tap-highlight-transparent select-none touch-none first-of-type:rounded-e-none 
+                             last-of-type:rounded-s-none [&:not(:first-of-type):not(:last-of-type)]:rounded-none 
+                             data-[pressed=true]:scale-[0.97] transition-transform-background flex flex-wrap truncate 
+                             box-border items-center justify-center text-default-foreground outline-none data-[focus-visible=true]:z-10 
+                             data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2
+                             data-[disabled=true]:text-default-300 data-[disabled=true]:pointer-events-none shadow-sm bg-default-100
+                             [&:not([data-active=true])]:bg-default-200 active:bg-default-300 min-w-9 w-9 h-9
+                             text-small rounded-medium relative"
+                            :style="{ cursor: currentPage === page ? 'default' : 'pointer' }"
+                        >
+                            <span v-if="currentPage === page"
+                                aria-hidden="true" data-slot="cursor"
+                                class="absolute flex overflow-visible items-center justify-center origin-center left-0 select-none 
+                                touch-none pointer-events-none z-20 opacity-100 shadow-primary/40 dark:bg-gray-900 text-primary-foreground shadow-md
+                                min-w-9 w-9 h-9 text-small rounded-medium"
+                                style="transform: scale(1);"
+                            >{{ page }}</span>
+                            <span v-else>{{ page }}</span>
+                        </li>
+                      
+                        <li role="button" tabindex="0" aria-label="next page button" data-slot="next"
+                        @click="getMusic(currentPage + 1)" :disabled="currentPage === totalPages"
+                            class="!rounded-s-none flex flex-wrap truncate box-border items-center justify-center text-default-foreground
+                             outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 
+                             data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 
+                             data-[disabled=true]:text-default-300 data-[disabled=true]:pointer-events-none shadow-sm 
+                             bg-default-100 [&amp;[data-hover=true]:not([data-active=true])]:bg-default-200 active:bg-default-300 
+                             min-w-9 w-9 h-9 text-small rounded-medium">
+                            <svg aria-hidden="true" fill="none" focusable="false" height="1em" role="presentation"
+                                viewBox="0 0 24 24" width="1em" class="rotate-180">
+                                <path d="M15.5 19l-7-7 7-7" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="1.5"></path>
+                            </svg>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <div v-else class="text-center text-gray-500 dark:text-gray-400">
+            <p>No music history found.</p>
         </div>
     </div>
 </template>
