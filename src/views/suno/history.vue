@@ -35,7 +35,7 @@ async function getMusic(page = 1) {
     const visitor_id = 'P3rxmekLjoQfNCa07Z7e';
     try {
         const BASEURL = import.meta.env.VITE_BASEURL_CHEAT;
-        const response = await fetch(`${BASEURL}/get/response/data/${visitor_id}`, {
+        const response = await fetch(`${BASEURL}/get/response/data/${visitor_id}?page=${page}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
