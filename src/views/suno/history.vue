@@ -496,14 +496,21 @@ onMounted(() => {
                             <span v-else>{{ page }}</span>
                         </li>
                       
-                        <li role="button" tabindex="0" aria-label="next page button" data-slot="next"
-                        @click="getMusic(currentPage + 1)" :disabled="currentPage === totalPages"
+                        <li
+                            role="button"
+                            tabindex="0"
+                            aria-label="next page button"
+                            data-slot="next"
+                            @click="currentPage < totalPages && getMusic(currentPage + 1)"
+                            :aria-disabled="currentPage === totalPages"
+                            :data-disabled="currentPage === totalPages"
                             class="!rounded-s-none flex flex-wrap truncate box-border items-center justify-center text-default-foreground
-                             outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 
-                             data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 
-                             data-[disabled=true]:text-default-300 data-[disabled=true]:pointer-events-none shadow-sm 
-                             bg-default-100 [&amp;[data-hover=true]:not([data-active=true])]:bg-default-200 active:bg-default-300 
-                             min-w-9 w-9 h-9 text-small rounded-medium">
+                                outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 
+                                data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 
+                                data-[disabled=true]:text-default-300 data-[disabled=true]:pointer-events-none shadow-sm 
+                                bg-default-100 [&amp;[data-hover=true]:not([data-active=true])]:bg-default-200 active:bg-default-300 
+                                min-w-9 w-9 h-9 text-small rounded-medium"
+                        >
                             <svg aria-hidden="true" fill="none" focusable="false" height="1em" role="presentation"
                                 viewBox="0 0 24 24" width="1em" class="rotate-180">
                                 <path d="M15.5 19l-7-7 7-7" stroke="currentColor" stroke-linecap="round"
