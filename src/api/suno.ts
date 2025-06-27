@@ -181,7 +181,8 @@ export const FeedMusic = async (id: string | null) => {
     gptServerStore.setInit();
     const sunoS = new sunoStore();
     if(id == undefined) return;
-    let url = '/generate/record-info?taskId='+ id;
+    const BASEURL = import.meta.env.VITE_BASEURL_CHEAT;
+    let url = `${BASEURL}/get/music/`+ id;
     let opt: RequestInit = { method: 'GET' };
     let headers = { 'Content-Type': 'application/json' };
     headers = { ...headers, ...getHeaderAuthorization() };
@@ -219,6 +220,6 @@ export const FeedMusic = async (id: string | null) => {
     //     }
     // });
     homeStore.setMyData({act:'FeedTask'});
-    await sleep(5 * 1020);
+    await sleep(5000);
     FeedMusic(id);
 }
