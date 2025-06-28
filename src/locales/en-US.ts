@@ -353,7 +353,7 @@ export default {
     "add2more": "Please add two or more images",
     "no1m": "Image size cannot exceed 1M",
     "imgExt": "Images support only jpg, gif, png, jpeg formats"
-    ,"setSync": "Synchronize Midjourney and Suno"
+    ,"setSync": "Synchronize Midjourney and Cheat"
 
     ,"addGPTS": "Add GPTs",
     "addPlaceholder": "Paste the GID of the GPTs here or directly paste the link of the GPTs",
@@ -473,11 +473,11 @@ export default {
     "nodata": "Please compose first to have a list of songs",
 
     "menu": "Music",
-    "menuinfo": "Suno Music Creation",
-    "server": "Suno API Endpoint",
-    "serverabout": "Suno Related",
-    "setOpenKeyPlaceholder": "Related KEY for Suno API; optional",
-    "historyinfo": "Suno Music History",
+    "menuinfo": "Cheat Music Creation",
+    "server": "Cheat API Endpoint",
+    "serverabout": "Cheat Related",
+    "setOpenKeyPlaceholder": "Related KEY for Cheat API; optional",
+    "historyinfo": "Cheat Music History",
     "history": "History"
 
     ,upMps:'Upload'
