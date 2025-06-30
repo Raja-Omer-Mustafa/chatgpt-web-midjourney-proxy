@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-
+import { onMounted, ref, watch } from 'vue';
+import { useVisitorData } from '@fingerprintjs/fingerprintjs-pro-vue-v3';
 const hoveredItemIndex = ref<number | null>(null);
 const hoveredIndex = ref<number | null>(null);
 const openedDetailIndex = ref<number | null>(null);
@@ -31,8 +31,20 @@ const downloadingIndex = ref<number | null>(null);
 const playingIndex = ref<number | null>(null);
 const audioRefs = ref<HTMLAudioElement[]>([]);
 
+let visitorId: string | null = null;
+const { data, getData } = useVisitorData(
+    { extendedResult: false }, 
+    { immediate: false }
+);
+watch(data, async (currentData) => {
+    if (currentData && currentData.visitorId) {
+        visitorId = currentData.visitorId;
+         console.log('Successfully sent visitorId to Laravel API:', visitorId)
+    }
+});
 async function getMusic(page = 1) {
-    const visitor_id = 'P3rxmekLjoQfNCa07Z7e';
+    await getData();
+    let visitor_id = visitorId;
     try {
         const BASEURL = import.meta.env.VITE_BASEURL_CHEAT;
         const response = await fetch(`${BASEURL}/get/response/data/${visitor_id}?page=${page}`, {
