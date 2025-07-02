@@ -172,10 +172,6 @@ const generate= async ()=>{
     }
 }
 
-
-
-
-
 watch(()=>homeStore.myData.act, (n)=>{
     if(n=='suno.extend'){
         mlog("suno.extend", homeStore.myData.actData )
@@ -185,6 +181,37 @@ watch(()=>homeStore.myData.act, (n)=>{
         cs.value.continue_at= Math.ceil(s?.metadata?.duration/2) 
     }
 });
+
+// Persist 'des'
+watch(
+  des,
+  (newVal) => {
+    localStorage.setItem('desData', JSON.stringify(newVal))
+  },
+  { deep: true }
+)
+
+// Persist 'cs'
+watch(
+  cs,
+  (newVal) => {
+    localStorage.setItem('csData', JSON.stringify(newVal))
+  },
+  { deep: true }
+)
+
+onMounted(() => {
+  const desSaved = localStorage.getItem('desData')
+  const csSaved = localStorage.getItem('csData')
+
+  if (desSaved) {
+    Object.assign(des.value, JSON.parse(desSaved))
+  }
+
+  if (csSaved) {
+    Object.assign(cs.value, JSON.parse(csSaved))
+  }
+})
 
 </script>
 <template>
@@ -240,7 +267,7 @@ watch(()=>homeStore.myData.act, (n)=>{
                  <!-- <template #prefix> -->
                      <span>{{$t('suno.style')}}：</span>
                  <!-- </template> -->
-                <n-input :placeholder="$t('suno.stylepls')" v-model:value="cs.tags" type="textarea" >
+                <n-input :placeholder="$t('suno.stylepls')" v-model:value="cs.tags" type="textarea" aria-rowspan="4"  rows="4">
                     <template #suffix>
                         <n-tooltip placement="right" trigger="hover">
                             <template #trigger>
