@@ -216,12 +216,15 @@ watch(()=>homeStore.myData.act, (n)=>{
                 </div>
             </div>
             <div  class="pt-1"> 
-            <n-input v-model:value="des.gpt_description_prompt" :disabled="des.make_instrumental"
-                :placeholder="$t('suno.descpls')"  type="textarea"  size="small"   
-                :autosize="{ minRows: 3, maxRows: 12  }"  />
+                <n-input
+                    v-model:value="des.gpt_description_prompt"
+                    :disabled="des.make_instrumental"
+                    :placeholder="$t('suno.descpls')"
+                    type="textarea"
+                />
             </div>
             <div  class="pt-1">
-                 <n-select v-model:value="des.mv" :options="mvOption" size="small" />
+                <n-select v-model:value="des.mv" :options="mvOption" size="small" />
             </div>
         </n-tab-pane>
 
@@ -234,10 +237,10 @@ watch(()=>homeStore.myData.act, (n)=>{
                 </n-input>
             </div>
              <div class="pt-4">
-                <n-input :placeholder="$t('suno.stylepls')" v-model:value="cs.tags">
-                    <template #prefix>
-                        <span>{{$t('suno.style')}}：</span>
-                    </template>
+                 <!-- <template #prefix> -->
+                     <span>{{$t('suno.style')}}：</span>
+                 <!-- </template> -->
+                <n-input :placeholder="$t('suno.stylepls')" v-model:value="cs.tags" type="textarea" >
                     <template #suffix>
                         <n-tooltip placement="right" trigger="hover">
                             <template #trigger>
@@ -265,8 +268,8 @@ watch(()=>homeStore.myData.act, (n)=>{
             </div>
             <div  class="pt-1"> 
                 <n-input v-model:value="cs.prompt" :disabled="des.make_instrumental"
-                :placeholder="$t('suno.lypls')" type="textarea"  size="small"   
-                :autosize="{ minRows: 3, maxRows: 12  }"  />
+                :placeholder="$t('suno.lypls')" type="textarea"    
+                  />
             </div>
             <div  class="pt-1">
                 <n-select v-model:value="cs.mv" :options="mvOption" size="small" />
