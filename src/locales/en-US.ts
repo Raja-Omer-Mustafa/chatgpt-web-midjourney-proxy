@@ -469,6 +469,7 @@ export default {
     "ly": "Lyrics",
     "lypls": "Lyrics: with a certain format",
     "generate": "Compose Song",
+    "sending": "Working on your prompt...",
     "generately": "Generate Lyrics",
     "nodata": "Please compose first to have a list of songs",
 

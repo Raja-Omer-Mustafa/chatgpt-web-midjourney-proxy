@@ -120,7 +120,7 @@ const generate= async ()=>{
             callBackUrl: callBackUrl,
             visitorId: visitorId,
         });
-        console.log("response: ", response);
+
         mlog('generate_music', response);
         if (response.code != 200) {
             ms.error(response.msg);
@@ -157,7 +157,6 @@ const generate= async ()=>{
             callBackUrl: callBackUrl,
             visitorId: visitorId,
         });
-        console.log("response: ", response);
         mlog('generate_music', response);
         if (response.code != 200) {
             ms.error(response.msg);
@@ -358,7 +357,11 @@ onMounted(() => {
                   <!-- <NTag v-if="st.type=='custom'" type="success" size="small" round  ><span class="cursor-pointer" @click="generateLyrics()" >上传音频</span></NTag> -->
                   <mcUploaderMp3 v-if="st.type=='custom'"/>
             </div>
-            <NButton type="primary" :disabled="!canPost" @click="generate()"><SvgIcon icon="ri:music-fill"  /> {{$t('suno.generate')}}</NButton> 
+            <NButton type="primary" :disabled="!canPost || st.isLoading" @click="generate()">
+                <SvgIcon icon="ri:music-fill"  />
+                <span v-if="st.isLoading">{{$t('suno.sending')}}</span>
+                <span v-else>{{$t('suno.generate')}}</span>
+            </NButton>
         </div>
         
        
