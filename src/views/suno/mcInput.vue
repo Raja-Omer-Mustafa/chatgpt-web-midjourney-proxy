@@ -40,7 +40,7 @@ const canPost = computed(() => {
    // return true; 
     if( st.value.isLoading ) return false;
     if( st.value.type=='custom'){
-        return cs.value.tags && cs.value.title
+        return cs.value.tags && cs.value.title && cs.value.prompt
     }
     if( st.value.type=='description' ){
         mlog('des: ', des.value.gpt_description_prompt , des.value.make_instrumental )
@@ -230,7 +230,7 @@ onMounted(() => {
             </div>
             <div  class="pt-4 flex justify-between">
                 <div>{{$t('suno.desc')}}:</div>
-                <div> 
+                <!-- <div> 
                     <n-switch v-model:value="des.make_instrumental" size="small">
                         <template #checked>
                          {{ $t('suno.noneedly') }}
@@ -239,7 +239,7 @@ onMounted(() => {
                          {{ $t('suno.noneedly') }}
                         </template>
                     </n-switch>
-                </div>
+                </div> -->
             </div>
             <div  class="pt-1"> 
                 <n-input
@@ -281,7 +281,7 @@ onMounted(() => {
 
             <div  class="pt-4 flex justify-between">
                 <div>{{$t('suno.ly')}} :</div>
-                <div> 
+                <!-- <div> 
                     <n-switch v-model:value="des.make_instrumental" size="small">
                         <template #checked>
                         {{ $t('suno.noneedly') }}
@@ -290,7 +290,7 @@ onMounted(() => {
                          {{ $t('suno.noneedly') }}
                         </template>
                     </n-switch>
-                </div>
+                </div> -->
             </div>
             <div  class="pt-1"> 
                 <n-input v-model:value="cs.prompt" :disabled="des.make_instrumental"
