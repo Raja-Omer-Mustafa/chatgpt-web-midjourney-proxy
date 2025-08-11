@@ -27,16 +27,16 @@ const goHome =computed(  () => {
   //router.push('/')
   return router.currentRoute.value.name
 });
-// const go=(n:string)=>{
-//   if('chat'==n){
-//         router.push('/chat/'+ chatStore.active??'1002')
-//     }
-//     if('draw'==n){
-//         router.push('/draw/'+ chatStore.active??'1002')
-//         st.value.show=true;
-//     }
-// }
-//mlog('g', goHome() );
+const go=(n:string)=>{
+  if('chat'==n){
+        router.push('/chat/'+ chatStore.active??'1002')
+    }
+    if('draw'==n){
+        router.push('/draw/'+ chatStore.active??'1002')
+        st.value.show=true;
+    }
+}
+// mlog('g', goHome() );
 const chatId= computed(()=>chatStore.active??'1002' );
 </script>
 
@@ -65,7 +65,7 @@ const chatId= computed(()=>chatStore.active??'1002' );
                   </template>
                     ChatGPT Store 
                 </n-tooltip>
-            </a>
+            </a> -->
 
 
             <a v-if="!isDisableMenu ( 'draws')"  @click="st.active='draw'; urouter.push(`/draw`)" class=" router-link-exact-active h-12 w-12 cursor-pointer rounded-xl bg-white duration-300 dark:bg-[#34373c] hover:bg-[#bbb] dark:hover:bg-[#555]">
@@ -92,7 +92,7 @@ const chatId= computed(()=>chatStore.active??'1002' );
                   </template>
                     {{ $t('mjtab.galleryInfo') }}
                 </n-tooltip>
-            </a> -->
+            </a>
 
 
             <a v-if="!isDisableMenu ( 'music')"      @click="st.active='music'; urouter.push('/music')" class=" router-link-exact-active h-12 w-12 cursor-pointer rounded-xl bg-white duration-300 dark:bg-[#34373c] hover:bg-[#bbb] dark:hover:bg-[#555]"
@@ -171,11 +171,11 @@ const chatId= computed(()=>chatStore.active??'1002' );
             <NAvatar  size="large"  round  :src="userInfo.avatar"   v-if="userInfo.avatar"  :fallback-src="defaultAvatar"
              class=" cursor-pointer"  />
             
-            <HoverButton>
+            <!-- <HoverButton>
                 <div class="text-xl text-[#4f555e] dark:text-white flex h-full justify-center items-center "  @click="st.show = true">
                     <SvgIcon icon="ri:settings-4-line" />
                 </div>
-            </HoverButton>
+            </HoverButton> -->
         </div>
     </div>
 </div>

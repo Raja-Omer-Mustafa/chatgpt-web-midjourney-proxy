@@ -31,9 +31,9 @@ const cs= ref({
 });
 
 const mvOption= [
-{label: 'V4.5',value: 'V4_5'}
-,{label:'V4',value: 'V4'}
-,{label:'V3.5',value: 'V3_5'}
+{label: 'Spotify1000KHLLM',value: 'V4_5'}
+,{label:'Spotify300KHLLM',value: 'V4'}
+,{label:'Spotify100KHLLM',value: 'V3_5'}
  ]
 
 const canPost = computed(() => {
