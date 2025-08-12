@@ -31,9 +31,10 @@ const cs= ref({
 });
 
 const mvOption= [
-{label: 'Spotify1000KHLLM',value: 'V4_5'}
-,{label:'Spotify300KHLLM',value: 'V4'}
-,{label:'Spotify100KHLLM',value: 'V3_5'}
+    {label: 'Spotify1000KHLLM PLUS',value: 'V4_5PLUS'},
+    {label: 'Spotify1000KHLLM',value: 'V4_5'},
+    {label:'Spotify300KHLLM',value: 'V4'},
+    {label:'Spotify100KHLLM',value: 'V3_5'},
  ]
 
 const canPost = computed(() => {
@@ -115,7 +116,7 @@ const generate= async ()=>{
             title: cs.value.title,
             style: cs.value.tags,
             model: des.value.mv,
-            instrumental: false,
+            instrumental: des.value.make_instrumental,
             customMode: st.value.type == 'custom',
             callBackUrl: callBackUrl,
             visitorId: visitorId,
@@ -152,7 +153,7 @@ const generate= async ()=>{
             prompt: des.value.gpt_description_prompt,
             title: cs.value.title,
             model: des.value.mv,
-            instrumental: false,
+            instrumental: des.value.make_instrumental,
             customMode: st.value.type == 'custom',
             callBackUrl: callBackUrl,
             visitorId: visitorId,
@@ -230,7 +231,7 @@ onMounted(() => {
             </div>
             <div  class="pt-4 flex justify-between">
                 <div>{{$t('suno.desc')}}:</div>
-                <!-- <div> 
+                <div> 
                     <n-switch v-model:value="des.make_instrumental" size="small">
                         <template #checked>
                          {{ $t('suno.noneedly') }}
@@ -239,7 +240,7 @@ onMounted(() => {
                          {{ $t('suno.noneedly') }}
                         </template>
                     </n-switch>
-                </div> -->
+                </div>
             </div>
             <div  class="pt-1"> 
                 <n-input
@@ -281,7 +282,7 @@ onMounted(() => {
 
             <div  class="pt-4 flex justify-between">
                 <div>{{$t('suno.ly')}} :</div>
-                <!-- <div> 
+                <div> 
                     <n-switch v-model:value="des.make_instrumental" size="small">
                         <template #checked>
                         {{ $t('suno.noneedly') }}
@@ -290,7 +291,7 @@ onMounted(() => {
                          {{ $t('suno.noneedly') }}
                         </template>
                     </n-switch>
-                </div> -->
+                </div> 
             </div>
             <div  class="pt-1"> 
                 <n-input v-model:value="cs.prompt" :disabled="des.make_instrumental"
