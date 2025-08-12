@@ -465,6 +465,8 @@ export default {
     "desc": "Song Description",
     "descpls": "Song description, e.g., Original pop music about vacation",
     "noneedly": "No lyrics needed",
+    "instrumentalOn": "instrumental on",
+    "instrumentalOff": "instrumental off",
     "rank": "Random selection",
     "ly": "Lyrics",
     "lypls": "Lyrics: with a certain format",

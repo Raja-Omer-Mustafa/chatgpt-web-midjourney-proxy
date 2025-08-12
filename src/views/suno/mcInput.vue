@@ -2,7 +2,7 @@
 import { ref,computed ,onMounted, watch} from 'vue';
 import { NTabs ,NTabPane ,NInput,NSwitch ,NTooltip, NTag ,NButton, useMessage,NSelect, NImage, NSlider} from "naive-ui";
 import { SvgIcon } from '@/components/common';
-import { mlog } from '@/api';
+import { instructions, mlog } from '@/api';
 import { sunoFetch ,lyricsFetch, randStyle, FeedTask, FeedMusic, generateMusic } from '@/api/suno';
 import { t } from '@/locales';
 import { homeStore } from '@/store';
@@ -41,11 +41,11 @@ const canPost = computed(() => {
    // return true; 
     if( st.value.isLoading ) return false;
     if( st.value.type=='custom'){
-        return cs.value.tags && cs.value.title && cs.value.prompt
+        return des.value.make_instrumental ? cs.value.tags && cs.value.title  : cs.value.tags && cs.value.title && cs.value.prompt
     }
     if( st.value.type=='description' ){
         mlog('des: ', des.value.gpt_description_prompt , des.value.make_instrumental )
-        return cs.value.title &&( des.value.gpt_description_prompt || des.value.make_instrumental)
+        return cs.value.title && des.value.gpt_description_prompt
     }
     return true
 })
@@ -154,7 +154,7 @@ const generate= async ()=>{
             title: cs.value.title,
             model: des.value.mv,
             instrumental: des.value.make_instrumental,
-            customMode: st.value.type == 'custom',
+            customMode: false,
             callBackUrl: callBackUrl,
             visitorId: visitorId,
         });
@@ -234,10 +234,10 @@ onMounted(() => {
                 <div> 
                     <n-switch v-model:value="des.make_instrumental" size="small">
                         <template #checked>
-                         {{ $t('suno.noneedly') }}
+                         {{ $t('suno.instrumentalOn') }}
                         </template>
                         <template #unchecked>
-                         {{ $t('suno.noneedly') }}
+                         {{ $t('suno.instrumentalOff') }}
                         </template>
                     </n-switch>
                 </div>
@@ -245,7 +245,6 @@ onMounted(() => {
             <div  class="pt-1"> 
                 <n-input
                     v-model:value="des.gpt_description_prompt"
-                    :disabled="des.make_instrumental"
                     :placeholder="$t('suno.descpls')"
                     type="textarea"
                 />
