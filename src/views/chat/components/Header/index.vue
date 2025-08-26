@@ -63,7 +63,7 @@ watch(()=>homeStore.myData.act,debounce( (n)=> n=='saveChat' && (nGptStore.value
   <header
     class="sticky top-0 left-0 right-0 z-30 border-b dark:border-neutral-800 bg-white/80 dark:bg-black/20 backdrop-blur"
   >
-    <div class="relative flex items-center justify-between min-w-0 overflow-hidden h-14" data-tauri-drag-region>
+    <div class="relative flex items-center justify-between min-w-0 overflow-hidden h-14 mr-3" data-tauri-drag-region>
       <div class="flex items-center">
         <button
           class="flex items-center justify-center w-11 h-11"
@@ -77,17 +77,31 @@ watch(()=>homeStore.myData.act,debounce( (n)=> n=='saveChat' && (nGptStore.value
         @dblclick="onScrollToTop" data-tauri-drag-region>
         {{ currentChatHistory?.title ?? '' }}
       </h1>
-      <div class="flex items-center space-x-2">
-        <HoverButton @click="handleExport">
-          <span class="text-xl text-[#4f555e] dark:text-white">
-            <SvgIcon icon="ri:download-2-line" />
-          </span>
-        </HoverButton>
-        <HoverButton @click="handleClear">
-          <span class="text-xl text-[#4f555e] dark:text-white">
-            <SvgIcon icon="ri:delete-bin-line" />
-          </span>
-        </HoverButton>
+      <div class="flex items-start space-x-4">
+        <div class="flex items-center space-x-1">
+          <HoverButton @click="true">
+            <span class="text-xl text-[#4f555e] dark:text-white">
+                <SvgIcon icon="ri:history-line" />
+            </span>
+           </HoverButton>
+           <span class="text-sm ms-2 text-[#4f555e] dark:text-white"> History </span>
+        </div>
+        <div class="flex items-center space-x-1">
+          <HoverButton @click="handleExport">
+            <span class="text-xl text-[#4f555e] dark:text-white">
+              <SvgIcon icon="ri:download-2-line" />
+            </span>
+          </HoverButton>
+          <span class="text-sm text-[#4f555e] dark:text-white"> Download </span>
+        </div>
+        <div class="flex items-center space-x-1">
+          <HoverButton @click="handleClear">
+            <span class="text-xl text-[#4f555e] dark:text-white">
+              <SvgIcon icon="ri:delete-bin-line" />
+            </span>
+          </HoverButton>
+          <span class="text-sm text-[#4f555e] dark:text-white"> Delete </span>
+        </div>
       </div>
     </div>
     
