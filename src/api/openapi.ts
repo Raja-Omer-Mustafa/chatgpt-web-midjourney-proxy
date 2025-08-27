@@ -453,40 +453,41 @@ export const subModel= async (opt: subModelType)=>{
         headers={...headers,...getHeaderAuthorization()}
 
         try {
-            await fetchSSE( gptGetUrl('/v1/chat/completions'),{
+            const response = await fetch('https://1cf64f4f4a60.ngrok-free.app/api/chat', {
                 method: 'POST',
-                headers: headers,
-                signal:opt.signal,
-                onMessage: async (data:string)=> {
-                    //mlog('🐞测试'  ,  data )  ;
-                    if(data=='[DONE]') opt.onMessage({text:'',isFinish:true})
-                    else {
-                        const obj= JSON.parse(data );
-                        opt.onMessage({text:obj.choices[0].delta?.content??'' ,isFinish:obj.choices[0].finish_reason!=null })
-                    }
-                },
-                onError(e ){
-                    //console.log('eee>>', e )
-                    mlog('❌未错误',e    )
-                    opt.onError && opt.onError(e)
-                },
-                body:JSON.stringify(body)
+                headers,
+                body: JSON.stringify(body),
             });
-        } catch (error ) {
-            mlog('❌未错误2',error  )
-            opt.onError && opt.onError(error)
+
+            const obj = await response.json();
+
+            // Get the message text
+            const text = obj.choices?.[0]?.message?.content ?? '';
+            opt.onMessage && opt.onMessage({ text, isFinish: true });
+
+            } catch (error) {
+            mlog('❌未错误2', error);
+            opt.onError && opt.onError(error);
         }
+
     }else{ 
-        try {
-            mlog('🐞非流输出',body  )
-            opt.onMessage({text: t('mj.thinking') ,isFinish: false })
-            let obj :any= await gptFetch( '/v1/chat/completions',body  )
-            //mlog('结果 >>',obj   )
-            opt.onMessage({text:obj.choices[0].message.content??'' ,isFinish: true ,isAll:true})
-            
-        } catch (error ) {
-            mlog('❌未错误2',error  )
-            opt.onError && opt.onError(error)
+       try {
+            mlog('🐞非流输出', body);
+            // show "thinking..." text first
+            opt.onMessage({ text: t('mj.thinking'), isFinish: false });
+            // fetch the completion
+            const obj: any = await gptFetch('https://1cf64f4f4a60.ngrok-free.app/api/chat', body);
+            // mlog('结果 >>', obj);
+            // extract assistant message
+            const text = obj?.choices?.[0]?.message?.content ?? '';
+            opt.onMessage({
+                text,
+                isFinish: true,
+                isAll: true
+            });
+        } catch (error) {
+            mlog('❌未错误2', error);
+            opt.onError && opt.onError(error);
         }
     }
 }

@@ -186,10 +186,8 @@ watch(()=>homeStore.myData.act, async (n)=>{
             message.push({  "role": "user",  "content": dd.prompt })
         }
         let opt={};
-        if( n=='gpt.whisper'){
-            opt= {
-                file: dd.file
-            }
+        if( dd.uploadedFile){
+            message.push({  "role": "user",  "content": dd.uploadedFile })
         }
         submit(model , message,opt );
  

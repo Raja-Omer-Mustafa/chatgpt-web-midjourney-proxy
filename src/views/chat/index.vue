@@ -93,6 +93,50 @@ function useExample(text: string) {
             
 }
 
+const uploadedFile = ref<any|null>("")
+const analysisMode = ref("default") // or whatever mode you use
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return bytes + " B"
+  else if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB"
+  else return (bytes / 1024 / 1024).toFixed(1) + " MB"
+}
+
+async function handleFileSelect(event: Event) {
+	const target = event.target as HTMLInputElement
+	const file = target.files?.[0]
+	if (!file) return
+
+	const formData = new FormData()
+	formData.append("file", file)
+	formData.append("analysis_mode", analysisMode.value)
+
+	try {
+		const response = await fetch('https://1cf64f4f4a60.ngrok-free.app/api/upload', {
+			method: "POST",
+			body: formData,
+		})
+
+		const data = await response.json()
+
+		if (data.error) {
+			throw new Error(data.error)
+		}
+
+		uploadedFile.value = data
+	} catch (error: any) {
+		console.error("Upload error:", error)
+		alert(`Failed to upload file: ${error.message}`)
+	}
+
+	// clear input so same file can be re-selected
+	target.value = ""
+}
+
+function removeFile() {
+  uploadedFile.value = null
+}
+
 function handleSubmit() {
   //onConversation() //把这个放到aiGpt
   let message = prompt.value;
@@ -101,7 +145,8 @@ function handleSubmit() {
   loading.value = true;
   homeStore.setMyData({
     act: "gpt.submit",
-    actData: { prompt: prompt.value, uuid },
+    actData: { prompt: prompt.value, uuid, uploadedFile: uploadedFile.value.analysis
+  },
   });
   prompt.value = "";
 }
@@ -622,8 +667,8 @@ const ychat = computed(() => {
             <div id="scrollRef" ref="scrollRef" class="h-full overflow-hidden overflow-y-auto">
                 <div id="image-wrapper" class="w-full max-w-screen-xl m-auto dark:bg-[#101014]"
                     :class="[isMobile ? 'p-2' : 'p-4']">
-                    <template v-if="!dataSources.length">
-                        <div class="text-center pt-10" v-if="
+                    <template v-if="!(dataSources.length || uploadedFile)" >
+                        <!-- <div class="text-center pt-10" v-if="
                             homeStore.myData.isClient &&
                             (!gptServerStore.myData.OPENAI_API_BASE_URL ||
                             !gptServerStore.myData.OPENAI_API_KEY)
@@ -635,7 +680,7 @@ const ychat = computed(() => {
                         <div class="flex items-center justify-center mt-4 text-center text-neutral-300" v-else>
                             <SvgIcon icon="ri:bubble-chart-fill" class="mr-2 text-3xl" />
                             <span>Aha~</span>
-                        </div>
+                        </div> -->
                         <div class="welcome-screen">
                             <div class="welcome-content">
                                 <div class="welcome-icon">🎵</div>
@@ -680,6 +725,15 @@ const ychat = computed(() => {
                                     {{ t("common.stopResponding") }}
                                 </NButton>
                             </div>
+							<!-- File status preview -->
+							<div v-if="uploadedFile" class="file-status flex items-center space-x-2">
+								<span class="text-sm text-gray-300">
+									{{ uploadedFile.filename }} ({{ formatFileSize(uploadedFile.size) }})
+								</span>
+								<button @click="removeFile" class="text-red-400 hover:text-red-600">
+									✕
+								</button>
+							</div>
                         </div>
                     </template>
                 </div>
@@ -690,16 +744,25 @@ const ychat = computed(() => {
                 <div class="flex items-center bg-[#2a2a2a] rounded-full px-3 py-2">
 
                     <!-- Attachment Icon -->
-                    <input type="file" ref="fileInput" style="display: none"
-                        accept=".txt,.md,.lyrics,.pdf,.wav,.mp3,.flac,.aiff,.docx">
-                    <button class="flex items-center justify-center text-gray-400 hover:text-white mr-2"
-                        @click="$refs.fileInput.click()">
-                        <SvgIcon icon="ri:attachment-2" class="w-5 h-5" />
-                    </button>
+                    	<input 
+							type="file" 
+							ref="fileInput" 
+							style="display: none"
+							accept=".txt,.md,.lyrics,.pdf,.wav,.mp3,.flac,.aiff,.docx"
+							@change="handleFileSelect"  
+						/>
+
+						<!-- Attachment button -->
+						<button 
+							class="flex items-center justify-center text-gray-400 hover:text-white mr-2"
+							@click="$refs.fileInput.click()"
+						>
+							<SvgIcon icon="ri:attachment-2" class="w-5 h-5" />
+						</button>
 
                     <!-- Input Box -->
                     <NInput ref="inputRef" v-model:value="prompt" type="textarea" :placeholder="placeholder"
-                        :autosize="{ minRows: 1, maxRows: isMobile ? 4 : 8 }" @keypress="handleEnter"
+                        :autosize="{ minRows: 1, maxRows: isMobile ? 4 : 8 }" @keypress="handleEnterhandleEnter"
                         class="flex-1 bg-transparent border-0 focus:ring-0 text-white resize-none" />
 
                     <!-- Send Button -->
