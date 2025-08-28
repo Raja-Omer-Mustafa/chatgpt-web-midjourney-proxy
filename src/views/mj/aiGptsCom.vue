@@ -46,7 +46,7 @@ const go= async ( item: gptsType)=>{
        }
     }
 
-    const saveObj= {model:  `${ item.gid }`   ,gpts:item}
+    const saveObj = { model: "gpt-5" }
     gptConfigStore.setMyData(saveObj); 
     if( uuid ){ //保存到对话框
         const  chatSet = new chatSetting(uuid );
