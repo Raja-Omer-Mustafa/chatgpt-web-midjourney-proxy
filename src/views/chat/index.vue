@@ -112,7 +112,7 @@ async function handleFileSelect(event: Event) {
 	formData.append("analysis_mode", analysisMode.value)
 
 	try {
-		const response = await fetch('https://1cf64f4f4a60.ngrok-free.app/api/upload', {
+		const response = await fetch('https://trunegative.com/api/upload', {
 			method: "POST",
 			body: formData,
 		})
