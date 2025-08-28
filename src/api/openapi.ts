@@ -453,7 +453,7 @@ export const subModel= async (opt: subModelType)=>{
         headers={...headers,...getHeaderAuthorization()}
 
         try {
-            const response = await fetch('https://trunegative.com/api/chat', {
+            const response = await fetch('https://6f087ddfd7de.ngrok-free.app/api/chat', {
                 method: 'POST',
                 headers,
                 body: JSON.stringify(body),
@@ -462,6 +462,11 @@ export const subModel= async (opt: subModelType)=>{
             const obj = await response.json();
 
             // Get the message text
+            if(obj.error){
+                mlog('❌错误1', obj.error);
+                opt.onError && opt.onError(obj.error);
+                return;
+            }
             const text = obj.choices?.[0]?.message?.content ?? '';
             opt.onMessage && opt.onMessage({ text, isFinish: true });
 
@@ -476,7 +481,7 @@ export const subModel= async (opt: subModelType)=>{
             // show "thinking..." text first
             opt.onMessage({ text: t('mj.thinking'), isFinish: false });
             // fetch the completion
-            const obj: any = await gptFetch('https://trunegative.com/api/chat', body);
+            const obj: any = await gptFetch('https://6f087ddfd7de.ngrok-free.app/api/chat', body);
             // mlog('结果 >>', obj);
             // extract assistant message
             const text = obj?.choices?.[0]?.message?.content ?? '';
