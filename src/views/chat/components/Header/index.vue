@@ -79,7 +79,7 @@ watch(()=>homeStore.myData.act,debounce( (n)=> n=='saveChat' && (nGptStore.value
       </h1>
       <div class="flex items-start space-x-4">
         <div class="flex items-center space-x-1">
-          <HoverButton @click="true">
+          <HoverButton @click="handleUpdateCollapsed">
             <span class="text-xl text-[#4f555e] dark:text-white">
                 <SvgIcon icon="ri:history-line" />
             </span>

@@ -80,7 +80,7 @@ watch(
     :collapsed="collapsed"
     :collapsed-width="0"
     :width="260"
-    :show-trigger="isMobile ? false : 'arrow-circle'"
+    
     collapse-mode="transform"
     
     bordered
@@ -99,16 +99,16 @@ watch(
         </div>
         <div class="flex items-center p-4 space-x-4">
           <div class="flex-1">
-            <NButton block @click="show = true">
+            <!-- <NButton block @click="show = true">
               {{ $t('store.siderButton') }}
-            </NButton>
+            </NButton> -->
           </div>
           <NButton @click="handleClearAll">
             <SvgIcon icon="ri:close-circle-line" />
           </NButton>
         </div>
       </main>
-      <Footer />
+      <!-- <Footer /> -->
     </div>
   </NLayoutSider>
   <template v-if="isMobile">

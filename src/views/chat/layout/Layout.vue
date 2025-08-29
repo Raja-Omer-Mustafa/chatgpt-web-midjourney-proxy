@@ -67,7 +67,7 @@ const getContainerClass = computed(() => {
     <div class="h-full overflow-hidden" :class="getMobileClass">
       <NLayout class="z-40 transition" :class="getContainerClass" has-sider>
         <aiSider v-if="!isMobile"/>
-        <!-- <Sider /> -->
+        <Sider />
         <Sider v-if="isMobile"/>
         <NLayoutContent class="h-full">
           <RouterView v-slot="{ Component, route }">

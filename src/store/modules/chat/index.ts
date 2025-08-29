@@ -200,10 +200,17 @@ export const useChatStore = defineStore('chat-store', {
 
     async reloadRoute(uuid?: number) {
       this.recordState();
-      mlog('toMyuid19','reloadRoute')
-      //await sleep(1000)
-      await router.push({ name: homeStore.myData.local=='draw'?'draw': 'Chat', params: { uuid } })
+
+      const current = router.currentRoute.value.name
+      // only force route if still inside chat/draw
+      if (current === 'Chat' || current === 'draw') {
+        await router.push({
+          name: homeStore.myData.local === 'draw' ? 'draw' : 'Chat',
+          params: { uuid: uuid ?? chatStore.active }
+        })
+      }
     },
+
 
     recordState() {
       setLocalState(this.$state)
