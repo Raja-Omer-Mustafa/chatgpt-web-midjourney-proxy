@@ -78,29 +78,29 @@ watch(()=>homeStore.myData.act,debounce( (n)=> n=='saveChat' && (nGptStore.value
         {{ currentChatHistory?.title ?? '' }}
       </h1>
       <div class="flex items-start space-x-4">
-        <div class="flex items-center space-x-1">
-          <HoverButton @click="handleUpdateCollapsed">
-            <span class="text-xl text-[#4f555e] dark:text-white">
+        <div class="flex items-center space-xl-1">
+        <HoverButton @click="handleUpdateCollapsed" class="flex items-center">
+            <span class="text-xl mx-2 text-[#4f555e] dark:text-white flex items-center">
                 <SvgIcon icon="ri:history-line" />
+                <span class="text-sm ms-2 text-[#4f555e] dark:text-white">History</span>
             </span>
-           </HoverButton>
-           <span class="text-sm ms-2 text-[#4f555e] dark:text-white"> History </span>
+        </HoverButton>
         </div>
         <div class="flex items-center space-x-1">
           <HoverButton @click="handleExport">
-            <span class="text-xl text-[#4f555e] dark:text-white">
+            <span class="text-xl mx-2 text-[#4f555e] dark:text-white flex items-center">
               <SvgIcon icon="ri:download-2-line" />
+              <span class="text-sm ms-2 text-[#4f555e] dark:text-white"> Download </span>
             </span>
           </HoverButton>
-          <span class="text-sm text-[#4f555e] dark:text-white"> Download </span>
         </div>
         <div class="flex items-center space-x-1">
           <HoverButton @click="handleClear">
-            <span class="text-xl text-[#4f555e] dark:text-white">
+            <span class="text-xl mx-2 text-[#4f555e] dark:text-white flex items-center">
               <SvgIcon icon="ri:delete-bin-line" />
+              <span class="text-sm ms-2 text-[#4f555e] dark:text-white"> Delete </span>
             </span>
           </HoverButton>
-          <span class="text-sm text-[#4f555e] dark:text-white"> Delete </span>
         </div>
       </div>
     </div>

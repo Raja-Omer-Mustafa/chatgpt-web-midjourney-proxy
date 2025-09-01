@@ -77,7 +77,7 @@ watch(
 
 <template>
   <NLayoutSider
-    :collapsed="collapsed"
+    :collapsed="!collapsed"
     :collapsed-width="0"
     :width="260"
     
