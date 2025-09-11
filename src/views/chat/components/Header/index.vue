@@ -73,7 +73,7 @@ watch(()=>homeStore.myData.act,debounce( (n)=> n=='saveChat' && (nGptStore.value
           <SvgIcon v-else class="text-2xl" icon="ri:align-right" />
         </button>
       </div>
-      <h1  class="flex-1 px-4 pr-6 overflow-hidden cursor-pointer select-none text-ellipsis whitespace-nowrap"
+      <h1 v-if="!isMobile" class="flex-1 px-4 pr-6 overflow-hidden cursor-pointer select-none text-ellipsis whitespace-nowrap"
         @dblclick="onScrollToTop" data-tauri-drag-region>
         {{ currentChatHistory?.title ?? '' }}
       </h1>

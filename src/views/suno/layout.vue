@@ -47,12 +47,12 @@ const getContainerClass = computed(() => {
             <component :is="Component" :key="route.fullPath" />
           </RouterView>
         </NLayoutContent>
-         <!-- <Sider /> -->
+         <Sider />
       </NLayout>
     </div>
     <Permission :visible="needPermission" />
   </div>
-  <!-- <aiMobileMenu v-if="isMobile"   />  -->
+  <aiMobileMenu v-if="isMobile"   /> 
   <aiFooter/>
   <player/>
 </template>
