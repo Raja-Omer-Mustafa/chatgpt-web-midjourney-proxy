@@ -724,9 +724,9 @@ const ychat = computed(() => {
 								:chat="{ ...item, model: undefined }"
 								:index="index"
 							/>
-                            <Message v-if="ychat.text" :key="dataSources.length" :inversion="true"
+                            <!-- <Message v-if="ychat.text" :key="dataSources.length" :inversion="true"
                                 :date-time="$t('mj.typing')" :chat="ychat" :text="ychat.text"
-                                :index="dataSources.length" />
+                                :index="dataSources.length" /> -->
                             <div class="sticky bottom-0 left-0 flex justify-center">
                                 <NButton v-if="loading" type="warning" @click="handleStop">
                                     <template #icon>
